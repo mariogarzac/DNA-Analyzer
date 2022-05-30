@@ -14,7 +14,7 @@ void send_file(FILE *fp, int sockfd)
     {
         if (send(sockfd, data, sizeof(data), 0) == -1)
         {
-            perror("[-] Error in sendung data");
+            perror("[-] Error in sending data");
             exit(1);
         }
         bzero(data, SIZE);
@@ -31,6 +31,20 @@ void endConnection(int sockfd)
     }
 }
 
+void printMenu()
+{
+    printf("-------------------------------------\n");
+    printf("-    Choose menu option (1, 2, 3)   -\n");
+    printf("-------------------------------------\n");
+    printf("- 1. Upload Sequence                -\n");
+    printf("-------------------------------------\n");
+    printf("- 2. Upload Reference               -\n");
+    printf("-------------------------------------\n");
+    printf("- 3. Exit                           -\n");
+    printf("-------------------------------------\n");
+    printf("\n");
+}
+
 int main()
 {
     char *ip = "127.0.0.1";
@@ -41,8 +55,6 @@ int main()
     struct sockaddr_in server_addr;
     FILE *fp;
     char filename[50];
-    printf("[+] Enter file name: ");
-    scanf("%s", filename);
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
@@ -64,42 +76,67 @@ int main()
     }
     printf("[+]Connected to server.\n");
 
-    char answer = 'y';
-    while (answer != 'n')
+    int menuOption;
+    while (1)
     {
-        fp = fopen(filename, "r");
-        if (fp == NULL)
-        {
-            perror("[-]Error in reading file.");
-            exit(1);
-        }
+        printMenu();
+        printf("[+]Enter menu option: ");
+        scanf("%d", &menuOption);
 
-        send_file(fp, sockfd);
-        printf("[+] File data send successfully. \n");
-        fclose(fp);
-
-        printf("[+] Send another file? (y/n) ");
-        scanf("%s", &answer);
-        printf("\n");
-
-        if (answer == 'n')
+        switch (menuOption)
         {
-            endConnection(sockfd);
-        }
-        else if (answer == 'y')
-        {
-            printf("[+] Enter file name: ");
+        case 1:
+            printf("[+]Enter file name: ");
             scanf("%s", filename);
-            printf("\n");
-        }
-        else
-        {
-            printf("[+] Send another file? (y/n) ");
-            scanf("%s", &answer);
-            printf("\n");
+
+            fp = fopen(filename, "r");
+
+            if (fp == NULL)
+            {
+                perror("[-]Error in reading file.");
+                exit(1);
+            }
+            else
+            {
+                send_file(fp, sockfd);
+                printf("[+]File data send successfully. \n");
+                fclose(fp);
+            }
+            sleep(1);
+            break;
+
+        case 2:
+            printf("[+]Enter file name: \n");
+            scanf("%s", filename);
+
+            fp = fopen(filename, "r");
+
+            if (fp == NULL)
+            {
+                perror("[-]Error in reading file.");
+                exit(1);
+            }
+            else
+            {
+                send_file(fp, sockfd);
+                printf("[+] File data send successfully. \n");
+                fclose(fp);
+            }
+
+            //TODO add recv for file matches
+            sleep(1);
+            break;
+        case 3:
+            printf("[+]Disconnected from the server. \n");
+            endConnection(sockfd);
+            close(sockfd);
+            exit(1);
+            break;
+        default:
+            printf("[-]Invalid choice. \n");
+            sleep(.5);
         }
     }
-    close(sockfd);
-    printf("[+]Disconnected from the server. \n");
+
     return 0;
 }
