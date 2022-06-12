@@ -26,19 +26,33 @@ void printMenu()
     printf("\n");
 }
 
-void sendFile(FILE *fp, int sockfd)
+void sendFile(int sockfd)
 {
-    char data[SIZE] = {0};
-    while (fgets(data, SIZE, fp) != NULL)
+    FILE *fp;
+    char fileName[50];
+    printf("[+]Write file name: ");
+    scanf("%s", fileName);
+    fp = fopen(fileName, "r");
+
+    if (fp != NULL)
     {
-        if (send(sockfd, data, sizeof(data), 0) == -1)
+
+        char data[SIZE] = {0};
+        while (fgets(data, SIZE, fp) != NULL)
         {
-            perror("[-]Error in sending data");
-            exit(1);
+            if (send(sockfd, data, sizeof(data), 0) == -1)
+            {
+                perror("[-]Error in sending data");
+                exit(1);
+            }
+            bzero(data, SIZE);
         }
-        bzero(data, SIZE);
+        fclose(fp);
     }
-    fclose(fp);
+    else
+    {
+        perror("[-]Error opening file.\n");
+    }
 }
 
 void menu(int menuOption, int sockfd)
@@ -53,7 +67,7 @@ void menu(int menuOption, int sockfd)
         scanf("%s", fileName);
         fp = fopen(fileName, "r");
         printf("Es uno!\n");
-        sendFile(fp, sockfd);
+        
         fclose(fp);
         break;
     case 2:
@@ -102,11 +116,20 @@ int main(int argc, char **argv)
         charValue[0] = option + '0';
         charValue[1] = '\0';
 
+        if (strcmp(charValue, "3") == 0){
+            printf("[+]Closing connection.");
+            sendOption(servaddr, sockfd, charValue);
+            close(sockfd);
+            shutdown(sockfd, SHUT_RDWR);
+            exit(1);
+        }
+
         // SEND MENU OPTION
         sendOption(servaddr, sockfd, charValue);
 
         // SEND FILE
-        menu(option, sockfd);
+        sendFile(sockfd);
+        //menu(option, sockfd);
 
         // CLOSE SOCKET TO BEGIN NEW CONNECTION
         bzero(charValue, 2);

@@ -12,6 +12,7 @@ void write_file(int sockfd, char option)
     int n;
     FILE *fp;
     char buffer[SIZE];
+    printf("%c\n", option);
 
     if (strcmp(&option, "1") == 0)
     {
@@ -88,7 +89,6 @@ int main(int argc, char **argv)
 
             if ((recv(sockfd, buffer, SIZE, 0)) > 0)
             {
-                printf("%s\n", buffer);
                 option = buffer[0];
                 bzero(buffer, SIZE);
 
@@ -102,7 +102,6 @@ int main(int argc, char **argv)
                 }
                 else
                 {
-                    printf("%c\n", option);
                     write_file(sockfd, option);
                 }
             }
