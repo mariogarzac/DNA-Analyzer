@@ -1,5 +1,3 @@
 client
 server
-*.txt
-*seq
 .DS_Store
