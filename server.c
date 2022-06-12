@@ -13,10 +13,10 @@ void write_file(int sockfd, char option)
     FILE *fp;
     char buffer[SIZE];
 
-    if (strstr(&option,"1") != NULL)
+    if (strstr(&option, "1") != NULL)
     {
         printf("[+]Copying file contents.\n");
-        fp = fopen("UPLOAD.txt", "w");
+        fp = fopen("files/UPLOAD.txt", "w");
         if (fp == NULL)
         {
             perror("[-]Error in creating file.");
@@ -35,10 +35,10 @@ void write_file(int sockfd, char option)
         }
         fclose(fp);
     }
-    else if (strstr(&option,"2") != NULL)
+    else if (strstr(&option, "2") != NULL)
     {
         printf("[+]Copying file contents.\n");
-        fp = fopen("REFERENCE.txt", "w");
+        fp = fopen("files/REFERENCE.txt", "w");
         if (fp == NULL)
         {
             perror("[-]Error in creating file.");
@@ -52,10 +52,14 @@ void write_file(int sockfd, char option)
                 break;
                 return;
             }
-            fprintf(fp, "%s", buffer); 
+            fprintf(fp, "%s", buffer);
             bzero(buffer, SIZE);
         }
         fclose(fp);
+    }
+    else if (strstr(&option, "3") != NULL)
+    {
+        printf("[+]Processing files. \n");
     }
 }
 
@@ -90,7 +94,7 @@ int main(int argc, char **argv)
                 bzero(buffer, SIZE);
 
                 // CLOSE SERVER CONNECTION
-                if (strcmp(&option, "3") == 0)
+                if (strcmp(&option, "4") == 0)
                 {
                     printf("[+]Disconnecting from server...");
                     close(sockfd);

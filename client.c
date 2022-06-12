@@ -15,13 +15,15 @@ void sendOption(struct sockaddr_in servaddr, int sockfd, char *charValue)
 void printMenu()
 {
     printf("-------------------------------------\n");
-    printf("-    Choose menu option (1, 2, 3)   -\n");
+    printf("-  Choose menu option (1, 2, 3, 4)  -\n");
     printf("-------------------------------------\n");
     printf("- 1. Upload Sequence                -\n");
     printf("-------------------------------------\n");
     printf("- 2. Upload Reference               -\n");
     printf("-------------------------------------\n");
-    printf("- 3. Exit                           -\n");
+    printf("- 3. Compare files                  -\n");
+    printf("-------------------------------------\n");
+    printf("- 4. Exit                           -\n");
     printf("-------------------------------------\n");
     printf("\n");
 }
@@ -30,9 +32,12 @@ void sendFile(int sockfd)
 {
     FILE *fp;
     char fileName[50];
+    char path[50] = "files/";
     printf("[+]Write file name: ");
     scanf("%s", fileName);
-    fp = fopen(fileName, "r");
+    strcat(path,fileName);
+
+    fp = fopen(path, "r");
 
     if (fp != NULL)
     {
@@ -52,39 +57,6 @@ void sendFile(int sockfd)
     else
     {
         perror("[-]Error opening file.\n");
-    }
-}
-
-void menu(int menuOption, int sockfd)
-{
-    FILE *fp;
-    char fileName[50];
-
-    switch (menuOption)
-    {
-    case 1:
-        printf("[+]Write file name: ");
-        scanf("%s", fileName);
-        fp = fopen(fileName, "r");
-        printf("Es uno!\n");
-        
-        fclose(fp);
-        break;
-    case 2:
-        printf("[+]Write file name: ");
-        scanf("%s", fileName);
-        fp = fopen(fileName, "r");
-        printf("Es dos!\n");
-        fclose(fp);
-        break;
-    case 3:
-        printf("[+]Closing connection.");
-        close(sockfd);
-        shutdown(sockfd, SHUT_RDWR);
-        exit(1);
-    default:
-        printf("[-]Invalid option. \n");
-        break;
     }
 }
 
@@ -111,12 +83,13 @@ int main(int argc, char **argv)
 
         // ASK FOR MENU OPTION
         fflush(stdin);
+        printf("[+]Select option: ");
         scanf("%d", &option);
 
         charValue[0] = option + '0';
         charValue[1] = '\0';
 
-        if (strcmp(charValue, "3") == 0){
+        if (strcmp(charValue, "4") == 0){
             printf("[+]Closing connection.");
             sendOption(servaddr, sockfd, charValue);
             close(sockfd);
