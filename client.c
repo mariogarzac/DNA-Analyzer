@@ -41,7 +41,6 @@ void sendFile(int sockfd)
 
     if (fp != NULL)
     {
-
         char data[SIZE] = {0};
         while (fgets(data, SIZE, fp) != NULL)
         {
@@ -58,6 +57,22 @@ void sendFile(int sockfd)
     {
         perror("[-]Error opening file.\n");
     }
+}
+
+void recieveComparison(int sockfd){
+    int n;
+    char buffer[SIZE];
+    while (1)
+        {
+            n = recv(sockfd, buffer, SIZE, 0);
+            if (n <= 0)
+            {
+                break;
+                return;
+            }
+            printf("%s", buffer);
+            bzero(buffer, SIZE);
+        }
 }
 
 
@@ -98,6 +113,7 @@ int main(int argc, char **argv)
         else if (strcmp(charValue, "3") == 0)
         {
             printf("[+]Waiting for resutls...");
+            recieveComparison(sockfd);
         }
         else if (strcmp(charValue, "4") == 0)
         {

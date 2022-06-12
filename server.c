@@ -60,6 +60,21 @@ void write_file(int sockfd, char option)
     else if (strstr(&option, "3") != NULL)
     {
         printf("[+]Processing files. \n");
+
+        // PROCESSING FUNCTION
+
+        fp = fopen("files/Results.txt", "r");
+
+        while (fgets(buffer, SIZE, fp) != NULL)
+        {
+            if (send(sockfd, buffer, sizeof(buffer), 0) == -1)
+            {
+                perror("[-] Error in sending data");
+                exit(1);
+            }
+            bzero(buffer, SIZE);
+        }
+
     }
 }
 
