@@ -6,21 +6,17 @@
 
 #define SIZE 1024
 
-void write_file(int sockfd, char *option)
+void write_file(int sockfd, char option)
 {
+    printf("[+]Data recieved.\n");
     int n;
     FILE *fp;
-    char *upload = "UPLOAD.txt";
-    char *reference = "REFERENCE.txt";
     char buffer[SIZE];
 
-    printf("%s\n", option);
-
-    if (strcmp(&option[0], "1") == 0)
+    if (strcmp(&option, "1") == 0)
     {
-        bzero(buffer, SIZE);
-        printf("[+]File opened");
-        fp = fopen(upload, "w");
+        printf("[+]Copying file contents.\n");
+        fp = fopen("UPLOAD.txt", "w");
         if (fp == NULL)
         {
             perror("[-]Error in creating file.");
@@ -35,16 +31,15 @@ void write_file(int sockfd, char *option)
                 return;
             }
             fprintf(fp, "%s", buffer);
+            printf("%s\n", buffer);
             bzero(buffer, SIZE);
         }
         fclose(fp);
-        printf("[+]Data written in the text file \n");
     }
-    else if (strcmp(&option[0], "2") == 0)
+    else if (strcmp(&option, "2") == 0)
     {
-        bzero(buffer, SIZE);
-
-        fp = fopen(reference, "w");
+        printf("[+]Copying file contents.\n");
+        fp = fopen("REFERENCE.txt", "w");
         if (fp == NULL)
         {
             perror("[-]Error in creating file.");
@@ -59,47 +54,59 @@ void write_file(int sockfd, char *option)
                 return;
             }
             fprintf(fp, "%s", buffer);
+            printf("%s\n", buffer);
             bzero(buffer, SIZE);
         }
         fclose(fp);
-        printf("[+]Data written in the text file \n");
     }
-    else if (strcmp(&option[0], "3") == 0)
-    {
-        printf("[+]Connection closed. \n");
-        close(sockfd);
-        shutdown(sockfd, SHUT_RDWR);
-        exit(1);
-    }
-    return;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
-  struct sockaddr_in servaddr;  
-  int sock = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in servaddr;
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
 
-  memset(&servaddr, 0, sizeof(servaddr));
-  servaddr.sin_family = AF_INET;
-  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  servaddr.sin_port = htons(6789);
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(6789);
 
-  bind(sock, (struct sockaddr *)&servaddr, sizeof(servaddr));  
-  listen(sock, 5);
+    bind(sock, (struct sockaddr *)&servaddr, sizeof(servaddr));
+    listen(sock, 5);
+    printf("[+]Server created.\n");
 
-  while(1) {
-    int sockfd = accept(sock, (struct sockaddr *) NULL, NULL);
+    while (1)
+    {
+        printf("[+]Listening...\n");
+        int sockfd = accept(sock, (struct sockaddr *)NULL, NULL);
 
-    if (sockfd >= 0) {
-      char buffer[SIZE];
-      int in, index = 0, limit = SIZE;
+        if (sockfd >= 0)
+        {
+            char buffer[SIZE];
+            char option;
 
-      if ((recv(sockfd, buffer, SIZE, 0)) > 0) {
-        printf("%s\n", buffer);
-        bzero(buffer,SIZE);    
-      }
+            if ((recv(sockfd, buffer, SIZE, 0)) > 0)
+            {
+                printf("%s\n", buffer);
+                option = buffer[0];
+                bzero(buffer, SIZE);
+
+                // CLOSE SERVER CONNECTION
+                if (strcmp(&option, "3") == 0)
+                {
+                    printf("[+]Disconnecting from server...");
+                    close(sockfd);
+                    shutdown(sockfd, SHUT_RDWR);
+                    exit(1);
+                }
+                else
+                {
+                    printf("%c\n", option);
+                    write_file(sockfd, option);
+                }
+            }
+        }
+        close(sockfd);
     }
-
-    close(sockfd);
-  }
 }
