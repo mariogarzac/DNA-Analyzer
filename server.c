@@ -13,7 +13,6 @@ void write_file(int sockfd, char option)
     FILE *fp;
     char buffer[SIZE];
 
-    //strcmp(&option, "1") == 0
     if (strstr(&option,"1") != NULL)
     {
         printf("[+]Copying file contents.\n");
@@ -32,12 +31,11 @@ void write_file(int sockfd, char option)
                 return;
             }
             fprintf(fp, "%s", buffer);
-            printf("%s\n", buffer);
             bzero(buffer, SIZE);
         }
         fclose(fp);
     }
-    else if (strstr(&option,"1") != NULL)
+    else if (strstr(&option,"2") != NULL)
     {
         printf("[+]Copying file contents.\n");
         fp = fopen("REFERENCE.txt", "w");
@@ -54,8 +52,7 @@ void write_file(int sockfd, char option)
                 break;
                 return;
             }
-            fprintf(fp, "%s", buffer);
-            printf("%s\n", buffer);
+            fprintf(fp, "%s", buffer); 
             bzero(buffer, SIZE);
         }
         fclose(fp);
