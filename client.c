@@ -35,7 +35,7 @@ void sendFile(int sockfd)
     char path[50] = "files/";
     printf("[+]Write file name: ");
     scanf("%s", fileName);
-    strcat(path,fileName);
+    strcat(path, fileName);
 
     fp = fopen(path, "r");
 
@@ -59,6 +59,7 @@ void sendFile(int sockfd)
         perror("[-]Error opening file.\n");
     }
 }
+
 
 int main(int argc, char **argv)
 {
@@ -89,19 +90,22 @@ int main(int argc, char **argv)
         charValue[0] = option + '0';
         charValue[1] = '\0';
 
-        if (strcmp(charValue, "4") == 0){
-            printf("[+]Closing connection.");
-            sendOption(servaddr, sockfd, charValue);
+        sendOption(servaddr, sockfd, charValue);
+        if ((strcmp(charValue, "1") == 0) || strcmp(charValue, "2") == 0)
+        {
+            sendFile(sockfd);
+        }
+        else if (strcmp(charValue, "3") == 0)
+        {
+            printf("[+]Waiting for resutls...");
+        }
+        else if (strcmp(charValue, "4") == 0)
+        {
+            printf("[+]Closing connection.\n");
             close(sockfd);
             shutdown(sockfd, SHUT_RDWR);
             exit(1);
         }
-
-        // SEND MENU OPTION
-        sendOption(servaddr, sockfd, charValue);
-
-        // SEND FILE
-        sendFile(sockfd);
 
         // CLOSE SOCKET TO BEGIN NEW CONNECTION
         bzero(charValue, 2);
