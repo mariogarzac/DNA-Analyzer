@@ -129,7 +129,6 @@ int main(int argc, char **argv)
 
         // SEND FILE
         sendFile(sockfd);
-        //menu(option, sockfd);
 
         // CLOSE SOCKET TO BEGIN NEW CONNECTION
         bzero(charValue, 2);

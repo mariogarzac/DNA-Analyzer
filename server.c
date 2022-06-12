@@ -12,9 +12,9 @@ void write_file(int sockfd, char option)
     int n;
     FILE *fp;
     char buffer[SIZE];
-    printf("%c\n", option);
 
-    if (strcmp(&option, "1") == 0)
+    //strcmp(&option, "1") == 0
+    if (strstr(&option,"1") != NULL)
     {
         printf("[+]Copying file contents.\n");
         fp = fopen("UPLOAD.txt", "w");
@@ -37,7 +37,7 @@ void write_file(int sockfd, char option)
         }
         fclose(fp);
     }
-    else if (strcmp(&option, "2") == 0)
+    else if (strstr(&option,"1") != NULL)
     {
         printf("[+]Copying file contents.\n");
         fp = fopen("REFERENCE.txt", "w");
