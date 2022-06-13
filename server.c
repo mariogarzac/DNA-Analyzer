@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <arpa/inet.h>
+//#include <omp.h>
+
+#include "files/process.h"
 
 #define SIZE 1024
 
@@ -60,10 +63,11 @@ void write_file(int sockfd, char option)
     else if (strstr(&option, "3") != NULL)
     {
         printf("[+]Processing files. \n");
+        printHello();
 
         // PROCESSING FUNCTION
 
-        fp = fopen("files/Results.txt", "r");
+        fp = fopen("files/RESULTS.txt", "r");
 
         while (fgets(buffer, SIZE, fp) != NULL)
         {
@@ -74,7 +78,6 @@ void write_file(int sockfd, char option)
             }
             bzero(buffer, SIZE);
         }
-
     }
 }
 
