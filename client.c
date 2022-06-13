@@ -73,7 +73,7 @@ void recieveComparison(int sockfd){
             printf("%s", buffer);
             bzero(buffer, SIZE);
         }
-        sleep(3);
+        sleep(1);
         printf("\n");
 }
 
