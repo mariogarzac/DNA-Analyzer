@@ -181,37 +181,38 @@ void processFile()
 
     FILE *fptr;
     fptr = fopen("files/RESULTS.txt", "w");
-    //#pragma omp parallel for
-    // for (int y = 0; y < 1000; y++)
-    //{
-    while (fscanf(file2, "%s", line) == 1)
+#pragma omp parallel for
+    for (int y = 0; y < 1000; y++)
     {
-        //  \0  "PARA SALTO DE LINEA EN ARCHIVO"///
-        if (strcmp(line, "\0") != 0)
+        #pragma omp critical
+        while (fscanf(file2, "%s", line) == 1)
         {
-            countEOL++;
-            // puts(line);
-            char *result = strstr(refS, line);
-
-            if (result)
+            //  \0  "PARA SALTO DE LINEA EN ARCHIVO"///
+            if (strcmp(line, "\0") != 0)
             {
-                int position = result - refS;
-                act = strlen(line);
-                int end = position + act;
+                countEOL++;
+                // puts(line);
+                char *result = strstr(refS, line);
 
-                //printf("A partir del indice: %d\n", position);
-                fprintf(fptr, "A partir del indice: %d\n", position);
+                if (result)
+                {
+                    int position = result - refS;
+                    act = strlen(line);
+                    int end = position + act;
 
-                tot += act;
-                si++;
-            }
-            else
-            {
-                fprintf(fptr, "Not Found");
-                no++;
+                    // printf("A partir del indice: %d\n", position);
+                    fprintf(fptr, "A partir del indice: %d\n", position);
+
+                    tot += act;
+                    si++;
+                }
+                else
+                {
+                    fprintf(fptr, "Not Found\n");
+                    no++;
+                }
             }
         }
-        //}
     }
 
     int lengthf = strlen(refS);
@@ -226,9 +227,7 @@ void processFile()
 
     // int porce = ((float)(numXs * 100) / lengthf);
     // printf("Porcentaje: %.2d", porce);
-    
 
-    printf("%d", countEOL);
     fprintf(fptr, "%d", countEOL);
     fprintf(fptr, "Total cubierto %d / %d\n", tot, iSize);
 
