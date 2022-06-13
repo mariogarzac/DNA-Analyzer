@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <omp.h>
 
 #define SIZE 1024
 #define num 256
@@ -191,7 +192,7 @@ void processFile()
             if (strcmp(line, "\0") != 0)
             {
                 countEOL++;
-                // puts(line);
+                fprintf(fptr, "%s \n",line);
                 char *result = strstr(refS, line);
 
                 if (result)
@@ -228,7 +229,7 @@ void processFile()
     // int porce = ((float)(numXs * 100) / lengthf);
     // printf("Porcentaje: %.2d", porce);
 
-    fprintf(fptr, "%d", countEOL);
+    fprintf(fptr, "Se compararon: %d secuencias \n", countEOL);
     fprintf(fptr, "Total cubierto %d / %d\n", tot, iSize);
 
     iPer = (iSize * 1.0) / (tot * 1.0);
