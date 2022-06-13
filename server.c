@@ -62,8 +62,8 @@ void write_file(int sockfd, char option)
     }
     else if (strstr(&option, "3") != NULL)
     {
-        printf("[+]Processing files. \n");
-        printHello();
+        printf("[+]Processing files... \n");
+        processFile();
 
         // PROCESSING FUNCTION
 
