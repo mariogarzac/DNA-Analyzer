@@ -73,6 +73,8 @@ void recieveComparison(int sockfd){
             printf("%s", buffer);
             bzero(buffer, SIZE);
         }
+        sleep(3);
+        printf("\n");
 }
 
 
@@ -112,7 +114,7 @@ int main(int argc, char **argv)
         }
         else if (strcmp(charValue, "3") == 0)
         {
-            printf("[+]Waiting for resutls...");
+            printf("[+]Waiting for resutls...\n");
             recieveComparison(sockfd);
         }
         else if (strcmp(charValue, "4") == 0)
